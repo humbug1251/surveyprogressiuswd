@@ -378,14 +378,9 @@ p {
   text-decoration: none;
 }
 
-.logo-home,
-.logo-link {
+.logo-home {
   display: flex;
   align-items: center;
-}
-
-.logo-link:hover {
-  opacity: 0.85;
 }
 
 .brand-copy strong {
