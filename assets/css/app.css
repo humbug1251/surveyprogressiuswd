@@ -498,7 +498,7 @@ p {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -525,7 +525,6 @@ p {
 .summary-drain { --accent: var(--amber); }
 .summary-uav { --accent: var(--green); }
 .summary-dgps { --accent: var(--violet); }
-
 .summary-label {
   font-family: var(--font-mono);
   font-size: 10px;

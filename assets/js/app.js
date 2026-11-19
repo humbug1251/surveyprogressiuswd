@@ -323,8 +323,6 @@
     let totalDrain = 0;
     let uavArea = 0;
     let dgps = 0;
-    let overallSum = 0;
-    let overallCount = 0;
 
     cities.forEach((city) => {
       const components = city.components || {};
@@ -343,16 +341,9 @@
       if (layers && layers.surveyPoints && layers.surveyPoints.count) {
         dgps += layers.surveyPoints.count;
       }
-
-      if (city.overall != null && !Number.isNaN(Number(city.overall))) {
-        overallSum += Number(city.overall);
-        overallCount += 1;
-      }
     });
 
-    const overall = overallCount ? overallSum / overallCount : null;
     const cards = [
-      ['Overall Progress', overall != null ? formatNumber(overall, 1) + '%' : '—', '', 'overall'],
       ['Total Drain Survey', formatNumber(totalDrain, 0), 'km', 'drain'],
       ['Area Covered in UAV', formatNumber(uavArea, 0), 'sq km', 'uav'],
       ['DGPS Points Marked', formatNumber(dgps, 0), 'points', 'dgps']
