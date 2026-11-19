@@ -374,6 +374,18 @@ p {
   display: flex;
   flex-direction: column;
   line-height: 1.1;
+  color: inherit;
+  text-decoration: none;
+}
+
+.logo-home,
+.logo-link {
+  display: flex;
+  align-items: center;
+}
+
+.logo-link:hover {
+  opacity: 0.85;
 }
 
 .brand-copy strong {
@@ -3631,6 +3643,10 @@ p {
 
   .logo-cds {
     height: 32px;
+  }
+
+  .logo-cwd {
+    height: 34px;
   }
 
   .logo-primove {
