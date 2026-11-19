@@ -160,6 +160,7 @@
     el.landing = document.getElementById('landing');
     el.cityView = document.getElementById('city-view');
     el.cityGrid = document.getElementById('city-grid');
+    el.summaryGrid = document.getElementById('summary-grid');
     el.coverageMap = document.getElementById('coverage-map');
     el.cityTitle = document.getElementById('city-title');
     el.citySub = document.getElementById('city-sub');
@@ -310,9 +311,58 @@
   /* ---------------------------------------------------------------------- */
 
   function renderLanding() {
+    renderSummary();
     renderCityGrid(DATA.cities);
     observeReveal(el.landing);
     requestAnimationFrame(() => initCoverageMap());
+  }
+
+  function renderSummary() {
+    if (!el.summaryGrid) return;
+    const cities = DATA.cities || [];
+    let totalDrain = 0;
+    let uavArea = 0;
+    let dgps = 0;
+    let overallSum = 0;
+    let overallCount = 0;
+
+    cities.forEach((city) => {
+      const components = city.components || {};
+      const primary = Number(components.primary && components.primary.done) || 0;
+      const secondary = Number(components.secondary && components.secondary.done) || 0;
+      const tertiary = Number(components.tertiary && components.tertiary.done) || 0;
+      const combined = Number(components.secondaryTertiary && components.secondaryTertiary.done) || 0;
+      const separated = secondary + tertiary;
+      totalDrain += primary + (separated > 0 ? separated : combined);
+
+      if (components.lidar && components.lidar.unit === 'sq km' && components.lidar.done != null) {
+        uavArea += Number(components.lidar.done);
+      }
+
+      const layers = city.layerKey ? CITY_LAYERS[city.layerKey] : null;
+      if (layers && layers.surveyPoints && layers.surveyPoints.count) {
+        dgps += layers.surveyPoints.count;
+      }
+
+      if (city.overall != null && !Number.isNaN(Number(city.overall))) {
+        overallSum += Number(city.overall);
+        overallCount += 1;
+      }
+    });
+
+    const overall = overallCount ? overallSum / overallCount : null;
+    const cards = [
+      ['Overall Progress', overall != null ? formatNumber(overall, 1) + '%' : '—', '', 'overall'],
+      ['Total Drain Survey', formatNumber(totalDrain, 0), 'km', 'drain'],
+      ['Area Covered in UAV', formatNumber(uavArea, 0), 'sq km', 'uav'],
+      ['DGPS Points Marked', formatNumber(dgps, 0), 'points', 'dgps']
+    ];
+
+    el.summaryGrid.innerHTML = cards.map(([label, value, unit, tone]) => `
+      <div class="summary-card summary-${tone}" data-reveal>
+        <span class="summary-label">${label}</span>
+        <span class="summary-value">${value}${unit ? `<small>${unit}</small>` : ''}</span>
+      </div>`).join('');
   }
 
   function renderCityGrid(cities) {
